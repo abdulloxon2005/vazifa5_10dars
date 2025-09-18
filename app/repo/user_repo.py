@@ -13,4 +13,4 @@ def add_user(db:Session,user_create_dto:UserCreate):
     return db_user
 
 def get_user_by_username(db:Session,username:str):
-    return  db.query(User).filter_by(username=username)
+    return  db.query(User).filter_by(username=username).first()
