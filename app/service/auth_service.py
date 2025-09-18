@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.repo.user_repo import get_user_by_username
-from app.schemas.auth_schemas import SignUpDto, LoginDto
+from app.schemas.auth_schemas import SignUpDto, LoginDto, TokenResponse
 from app.repo import user_repo
 from app.schemas.token_schemas import TokenData
 from app.schemas.user_schemas import UserCreate
@@ -28,4 +28,4 @@ def login(db:Session,login_dto:LoginDto):
     access_token = create_acces_token(TokenData(username=db_user.username,user_id=db_user.id))
     refresh_token = create_refresh_token(db_user.id)
 
-    return
+    return TokenResponse(access_token=access_token,refresh_token=refresh_token)
