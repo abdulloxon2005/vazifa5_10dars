@@ -16,22 +16,22 @@ def now():
 def create_acces_token(claim:TokenData):
     claim = claim.model_copy()
 
-    sub = claim.user_id
-    expires =now() + timedelta(ACCESS_TOKEN_EXPIRE_TIME_MINUTES)
+
+    expires =now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_TIME_MINUTES)
     issued_at = now()
 
     to_encode = claim.model_dump()
-    to_encode.update({"exp": expires,"iat":issued_at,"sub":sub })
+    to_encode.update({"exp": expires,"iat":issued_at})
 
     return jwt.encode(to_encode,ACCESS_TOKEN_SECRET_KEY,ALGORITHM)
 
 
 def create_refresh_token(user_id:int):
-    sub = user_id
-    expires = now() + timedelta(REFRESH_TOKEN_EXPIRE_TIME_DAYS)
+
+    expires = now() + timedelta(days=REFRESH_TOKEN_EXPIRE_TIME_DAYS)
     issued_at = now()
 
-    to_encode = {"exp": expires,"iat":issued_at,"sub":sub }
+    to_encode = {"exp": expires,"iat":issued_at }
     return jwt.encode(to_encode,REFRESH_TOKEN_SECRET_KEY,ALGORITHM)
 
 def verify_access_token(token:str):
@@ -40,7 +40,7 @@ def verify_access_token(token:str):
         if not payload.get("username") or not payload.get("user_id"):
             raise HTTPException(status_code=401, detail="Token is invalid")
 
-        return TokenData(username=payload.get("username"),user_id=payload.get("user_id"))
+        return TokenData(username=payload.get("username"),user_id=payload.get("user_id"),roles=payload.get("roles"))
     except ExpiredSignatureError:
         raise HTTPException(status_code=401,detail="Token is expire")
     except JWTError:

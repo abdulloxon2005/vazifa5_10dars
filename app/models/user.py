@@ -1,7 +1,5 @@
 from sqlalchemy import Integer, String, Table, Column, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.testing.provision import setup_config
-
 from app.db.base import Base
 
 
@@ -12,6 +10,11 @@ roles_user = Table(
     Column("role_id",Integer,ForeignKey("roles.id"))
 )
 
+
+class Roles:
+    pass
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -19,8 +22,8 @@ class User(Base):
     username:Mapped[str] = mapped_column(String)
     password: Mapped[str] = mapped_column(String)
 
-    roles = relationship("Role",secondary=roles_user)
-class Roles(Base):
+    roles:Mapped[list["Roles"]] = relationship("Role",secondary=roles_user)
+class Role(Base):
     __tablename__ = "roles"
 
     id:Mapped[int] = mapped_column(Integer,primary_key=True)

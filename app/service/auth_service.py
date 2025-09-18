@@ -25,7 +25,8 @@ def login(db:Session,login_dto:LoginDto):
     if not db_user or not verify_password(login_dto.password,db_user.password):
         raise HTTPException(status_code=401,detail="Username or password is not valid")
 
-    access_token = create_acces_token(TokenData(username=db_user.username,user_id=db_user.id))
+    roles = [role.name for role in db_user.roles]
+    access_token = create_acces_token(TokenData(username=db_user.username,user_id=db_user.id,roles=roles))
     refresh_token = create_refresh_token(db_user.id)
 
     return TokenResponse(access_token=access_token,refresh_token=refresh_token)
