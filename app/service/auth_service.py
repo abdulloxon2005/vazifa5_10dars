@@ -19,6 +19,14 @@ def sign_up(db: Session,signup_dto: SignUpDto):
     user_create = UserCreate(username=signup_dto.username,password=hash_password(signup_dto.password))
     return user_repo.add_user(db,user_create )
 
+def add_admin(db: Session,signup_dto: SignUpDto):
+    db_user = get_user_by_username(db,username=signup_dto.username)
+    if db_user:
+        raise ValueError("username is already exist")
+    user_create = UserCreate(username=signup_dto.username,password=hash_password(signup_dto.password))
+    return user_repo.add_admin(db,user_create )
+
+
 def login(db:Session,login_dto:LoginDto):
     db_user = get_user_by_username(db,username=login_dto.username)
 
